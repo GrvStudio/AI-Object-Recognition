@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 5
+names: ['Barcode', 'Cardboard', 'Code Product', 'ID Card', 'Size']
+
+roboflow:
+  workspace: rahmad-iqbal-guf2m
+  project: nike-prototype
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/rahmad-iqbal-guf2m/nike-prototype/dataset/1
