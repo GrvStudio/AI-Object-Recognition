@@ -1,6 +1,6 @@
-train: ../train/images
-val: ../valid/images
-test: ../test/images
+train: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/train/images
+val: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/valid/images
+test: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/test/images
 
 nc: 5
 names: ['Barcode', 'Cardboard', 'Code Product', 'ID Card', 'Size']

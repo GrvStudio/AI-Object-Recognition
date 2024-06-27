@@ -1,2 +1,4 @@
 yolo8_env/
 dataSet/
+runs/
+yolov8n.pt
