@@ -8,8 +8,8 @@ python version 3.12.4
 - download dataSet di sini => https://universe.roboflow.com/rahmad-iqbal-guf2m/nike-prototype
 - extract, and change name folder "dataSet"
 - copy main.yaml on folder dataSet to your path project
-example
 
+E X A M P L E
 my-project/
 
 ├── dataSet/
@@ -33,4 +33,7 @@ my-project/
 ├── main.py
 
 └── trainDataSet
+
+- if your first clone this project, you must run file trainDataset.py => "python3 trainDataset"
+- to test via webcam for object detection, please run main.py => "python3 main.py"
 
