@@ -13,15 +13,25 @@ E X A M P L E
 my-project/
 
 ├── dataSet/
+
 │   ├── README.dataset.txt
+
 │   ├──README.roboflow.txt
+
 │   ├── test/
+
 │   ├── train/
+
 │   ├── valid/
+
 ├── yolo8_env/
+
 ├── .gitignore
+
 ├── data.yaml
+
 ├── main.py
+
 └── trainDataSet
 
 - if your first clone this project, you must run file trainDataset.py => "python3 trainDataset"
