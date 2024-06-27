@@ -11,15 +11,26 @@ python version 3.12.4
 example
 
 my-project/
+
 ├── dataSet/
+
 │   ├── README.dataset.txt
+
 │   ├──README.roboflow.txt
+
 │   ├── test/
+
 │   ├── train/
+
 │   ├── valid/
+
 ├── yolo8_env/
+
 ├── .gitignore
+
 ├── data.yaml
+
 ├── main.py
+
 └── trainDataSet
 
