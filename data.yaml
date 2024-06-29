@@ -3,11 +3,11 @@ val: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/valid/
 test: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/test/images
 
 nc: 5
-names: ['Barcode', 'Cardboard', 'Code Product', 'ID Card', 'Size']
+names: ['Barcode', 'Cardboard', 'Detail Product', 'ID Card', 'Size']
 
 roboflow:
-  workspace: rahmad-iqbal-guf2m
-  project: nike-prototype
+  workspace: iqbal-grv
+  project: nike-prototype-qftsx
   version: 1
   license: CC BY 4.0
-  url: https://universe.roboflow.com/rahmad-iqbal-guf2m/nike-prototype/dataset/1
+  url: https://universe.roboflow.com/iqbal-grv/nike-prototype-qftsx/dataset/1
