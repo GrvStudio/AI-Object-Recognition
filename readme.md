@@ -1,5 +1,5 @@
 NOTES
-python version 3.12.4
+python version min 3.7.7
 
 - install => python3 -m venv yolo8_env
 - copy this code => source yolo8_env/bin/activate
