@@ -5,7 +5,7 @@ python version min 3.7.7
 - copy this code => source yolo8_env/bin/activate
 - install => python3 -m pip install --upgrade pip
 - install => pip3 install ultralytics roboflow
-- download dataSet di sini => https://universe.roboflow.com/iqbal-grv/nike-prototype-qftsx
+- download dataSet di sini => https://universe.roboflow.com/nike-prototype/nike-prototype-q3j7o
 - extract, and change name folder "dataSet"
 - copy main.yaml on folder dataSet to your path project
 
