@@ -1,7 +1,6 @@
 import cv2
 from pyzbar.pyzbar import decode
 
-
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
 def detect_bar_code(frame):
     barcodes = decode(frame)
@@ -36,9 +35,8 @@ def detect_bar_code(frame):
 
     return frame, barcode_info
 
-
 # Fungsi untuk menampilkan hasil deteksi barcode di atas webcam
-def show_barcode_results(frame, barcode_data_combined):
+def show_barcode_results(frame, barcode_data_combined, total_unique_barcodes):
     if barcode_data_combined:
         # Tentukan ukuran teks
         text_size = cv2.getTextSize(barcode_data_combined, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
@@ -53,3 +51,31 @@ def show_barcode_results(frame, barcode_data_combined):
 
         # Tampilkan data barcode dengan teks merah di atas background putih
         cv2.putText(frame, barcode_data_combined, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+    # Tampilkan jumlah total deteksi barcode di pojok kiri atas frame dengan background kuning dan teks hitam
+    count_text = f'Count detect = {total_unique_barcodes}'
+    count_text_size = cv2.getTextSize(count_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
+    count_text_x = 10
+    count_text_y = 30
+
+    # Gambar background kuning untuk teks
+    cv2.rectangle(frame, (count_text_x - 5, count_text_y - count_text_size[1] - 5), (count_text_x + count_text_size[0] + 5, count_text_y + 5), (0, 255, 255), -1)
+
+    # Tampilkan teks hitam di atas background kuning
+    cv2.putText(frame, count_text, (count_text_x, count_text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+
+
+# Fungsi untuk memperbarui jumlah deteksi barcode
+barcode_counts = {}
+def update_barcode_count(barcode_data):
+    if barcode_data in barcode_counts:
+        barcode_counts[barcode_data] += 1
+    else:
+        barcode_counts[barcode_data] = 1
+
+# Fungsi untuk mendapatkan jumlah total deteksi barcode yang berbeda
+def get_total_unique_barcodes():
+    return len(barcode_counts)
+
+
+
