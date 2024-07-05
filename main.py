@@ -1,7 +1,9 @@
 import cv2
 from ultralytics import YOLO
+import csv
 from utils.draw_border import draw_border
-from utils.detect_bar_code import detect_bar_code, show_barcode_results
+from utils.detect_bar_code import detect_bar_code, show_barcode_results, update_barcode_count, get_total_unique_barcodes
+from utils.saved_to_Csv import load_saved_barcodes, save_barcode_to_csv
 
 # Inisialisasi model YOLO yang sudah dilatih
 model = YOLO('./runs/detect/train/weights/best.pt')  # Ganti dengan path ke model yang sudah dilatih
@@ -25,6 +27,8 @@ if not cap.isOpened():
 
 # Variabel untuk menyimpan nilai barcode terakhir yang terdeteksi
 last_barcode_data = ""
+# Memuat barcode yang sudah ada jika file detected_barcodes.csv sudah ada
+load_saved_barcodes()
 
 try:
     while True:
@@ -41,6 +45,11 @@ try:
             new_barcode_data = ' | '.join([info[0] for info in barcode_info])
             if new_barcode_data != last_barcode_data:
                 last_barcode_data = new_barcode_data
+                save_barcode_to_csv(last_barcode_data)  # Simpan data barcode ke CSV
+                update_barcode_count(last_barcode_data)  # Perbarui jumlah deteksi barcode
+
+        # Dapatkan jumlah total deteksi barcode yang berbeda
+        total_unique_barcodes = get_total_unique_barcodes()
 
         # Deteksi objek dalam frame menggunakan YOLO
         results = detect_objects(frame.copy())  # Copy frame untuk diproses
@@ -68,7 +77,7 @@ try:
                     frame = draw_border(frame, (x1, y1), (x2, y2), color=border_color, thickness=2, line_length_x=30, line_length_y=30, padding=20)
 
         # Tampilkan hasil deteksi barcode di atas webcam
-        show_barcode_results(frame, last_barcode_data)
+        show_barcode_results(frame, last_barcode_data, total_unique_barcodes)
 
         # Tampilkan frame dengan hasil deteksi
         cv2.imshow('YOLOv8 Webcam Detection', frame)
