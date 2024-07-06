@@ -1,13 +1,12 @@
-train: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/train/images
-val: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/valid/images
-test: /Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/dataSet/test/images
-
-nc: 3
-names: ['Barcode', 'Cardboard', 'ID Card']
+train: ../../train/images
+val: ../../valid/images
+test: ../../test/images
+nc: 5
+names: ['Barcode', 'Cardboard', 'Description Empty', 'Description Product', 'ID Card']
 
 roboflow:
-  workspace: dave-irawan
+  workspace: nike-prototype
   project: nike-prototype-q3j7o
-  version: 1
+  version: 3
   license: CC BY 4.0
-  url: https://universe.roboflow.com/dave-irawan/nike-prototype-q3j7o/dataset/1
+  url: https://universe.roboflow.com/nike-prototype/nike-prototype-q3j7o/dataset/3
