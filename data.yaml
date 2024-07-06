@@ -1,6 +1,6 @@
-train: /home/danieka/Code/AI-Object-Recognition/train/images
-val: /home/danieka/Code/AI-Object-Recognition/valid/images
-test: /home/danieka/Code/AI-Object-Recognition/test/images
+train: ../../train/images
+val: ../../valid/images
+test: ../../test/images
 nc: 5
 names: ['Barcode', 'Cardboard', 'Description Empty', 'Description Product', 'ID Card']
 
