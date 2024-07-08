@@ -72,7 +72,6 @@ def update_barcode_count(barcode_data):
         barcode_counts[barcode_data] += 1
     else:
         barcode_counts[barcode_data] = 1
-
 # Fungsi untuk mendapatkan jumlah total deteksi barcode yang berbeda
 def get_total_unique_barcodes():
     return len(barcode_counts)
