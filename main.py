@@ -3,7 +3,7 @@ import os
 import time
 from ultralytics import YOLO
 from utils.draw_border import draw_border
-from utils.detect_bar_code import detect_bar_code, show_barcode_results, update_barcode_count, get_total_unique_barcodes
+from utils.detect_bar_code import detect_bar_code, show_barcode_results, update_barcode_count, get_total_unique_barcodes, count_png_files_in_no_barcode_folder
 from utils.saved_to_Csv import load_saved_barcodes, save_barcode_to_csv
 
 # Inisialisasi model YOLO yang sudah dilatih
@@ -112,7 +112,7 @@ try:
         show_barcode_results(frame, last_barcode_data, total_unique_barcodes)
 
         # Tampilkan frame dengan hasil deteksi
-        cv2.imshow('YOLOv8 Webcam Detection', frame)
+        cv2.imshow('AI Prototype', frame)
 
         # Break loop jika tombol 'q' ditekan
         if cv2.waitKey(1) & 0xFF == ord('q'):

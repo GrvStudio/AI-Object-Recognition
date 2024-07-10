@@ -1,4 +1,5 @@
 import cv2
+import os
 from pyzbar.pyzbar import decode
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
@@ -35,6 +36,17 @@ def detect_bar_code(frame):
 
     return frame, barcode_info
 
+# Count Folder no-barcode
+def count_png_files_in_no_barcode_folder():
+    folder_path = 'no-barcode'
+    if not os.path.exists(folder_path):
+        print(f"Folder '{folder_path}' tidak ditemukan.")
+        return 0
+    
+    png_files = [file for file in os.listdir(folder_path) if file.endswith('.png')]
+    png_file_count = len(png_files)
+    return png_file_count
+
 # Fungsi untuk menampilkan hasil deteksi barcode di atas webcam
 def show_barcode_results(frame, barcode_data_combined, total_unique_barcodes):
     if barcode_data_combined:
@@ -64,6 +76,18 @@ def show_barcode_results(frame, barcode_data_combined, total_unique_barcodes):
     # Tampilkan teks hitam di atas background kuning
     cv2.putText(frame, count_text, (count_text_x, count_text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
 
+    # Hitung jumlah file PNG dalam folder no-barcode
+    png_file_count = count_png_files_in_no_barcode_folder()
+    png_count_text = f'No Barcode = {png_file_count}'
+    png_count_text_size = cv2.getTextSize(png_count_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
+    png_count_text_x = frame.shape[1] - png_count_text_size[0] - 10
+    png_count_text_y = 30
+
+    # Gambar background kuning untuk teks di pojok kanan atas
+    cv2.rectangle(frame, (png_count_text_x - 5, png_count_text_y - png_count_text_size[1] - 5), (png_count_text_x + png_count_text_size[0] + 5, png_count_text_y + 5), (0, 255, 255), -1)
+
+    # Tampilkan teks hitam di atas background kuning di pojok kanan atas
+    cv2.putText(frame, png_count_text, (png_count_text_x, png_count_text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
 
 # Fungsi untuk memperbarui jumlah deteksi barcode
 barcode_counts = {}
