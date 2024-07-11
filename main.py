@@ -34,7 +34,9 @@ def capture_cardboard_if_no_barcode_detected(frame):
     
     cardboard_detected = False
     id_card_detected = False
-    
+    barcode_detected = False
+    cardboard_indices = {}
+
     for result in results:
         for box in result.boxes:
             x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
@@ -44,12 +46,9 @@ def capture_cardboard_if_no_barcode_detected(frame):
             cv2.putText(frame, f'{label} {confidence:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             if label == "Cardboard":
                 global cardboard_index
-                if cardboard_index not in cardboard_indices:
-                    cardboard_indices[cardboard_index] = {'bbox': (x1, y1, x2, y2), 'frame': frame.copy()}
-                else:
-                    cardboard_index += 1
-                    cardboard_indices[cardboard_index] = {'bbox': (x1, y1, x2, y2), 'frame': frame.copy()}
+                cardboard_indices[cardboard_index] = {'bbox': (x1, y1, x2, y2), 'frame': frame.copy()}
                 cardboard_detected = True
+                cardboard_index += 1
                 border_color = (0, 0, 255)
                 frame = draw_border(frame, (x1, y1), (x2, y2), color=border_color, thickness=2, line_length_x=30, line_length_y=30, padding=20)
             elif label == "ID Card":
@@ -57,16 +56,19 @@ def capture_cardboard_if_no_barcode_detected(frame):
                 border_color = (255, 0, 0)  # Biru
                 frame = draw_border(frame, (x1, y1), (x2, y2), color=border_color, thickness=2, line_length_x=30, line_length_y=30, padding=20)
             elif label == "Barcode":
-                return  # Jika ada barcode terdeteksi, langsung kembalikan tanpa menyimpan "Cardboard"
+                barcode_detected = True  # Tandai bahwa barcode terdeteksi
 
     # Jika tidak ada barcode yang terdeteksi dan kedua objek "Cardboard" dan "ID Card" terdeteksi
-    if len(cardboard_indices) > 0 and cardboard_detected and id_card_detected:
-        # Simpan frame sebagai gambar PNG di folder 'no-barcode'
-        os.makedirs('no-barcode', exist_ok=True)
-        img_filename = f'no-barcode/captured_cardboard_{len(os.listdir("no-barcode")) + 1}.png'
-        cv2.imwrite(img_filename, frame)
-        print(f"Captured 'Cardboard' without barcode: {img_filename}")
-        last_capture_time = current_time
+    if cardboard_detected and id_card_detected and not barcode_detected:
+        for idx, data in cardboard_indices.items():
+            x1, y1, x2, y2 = data['bbox']
+            cardboard_frame = data['frame'][y1:y2, x1:x2]  # Potong frame ke area cardboard
+            # Simpan frame sebagai gambar PNG di folder 'no-barcode'
+            os.makedirs('no-barcode', exist_ok=True)
+            img_filename = f'no-barcode/captured_cardboard_{len(os.listdir("no-barcode")) + 1}.png'
+            cv2.imwrite(img_filename, cardboard_frame)
+            print(f"Captured 'Cardboard' without barcode: {img_filename}")
+            last_capture_time = current_time
 
 # Buka webcam
 cap = cv2.VideoCapture(0)  # 0 adalah indeks default untuk webcam internal
