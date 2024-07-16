@@ -19,7 +19,7 @@ capture_interval = 10  # Interval waktu (detik) antara capture
 
 # Fungsi untuk mendeteksi objek dalam frame menggunakan YOLO
 def detect_objects(frame):
-    results = model.track(frame, persist=True, conf=0.5)
+    results = model.track(frame, persist=True)
     return results
 
 # Fungsi untuk menangkap gambar objek "Cardboard" jika tidak ada barcode yang terdeteksi
@@ -58,12 +58,12 @@ def capture_cardboard_if_no_barcode_detected(frame):
             elif label == "Barcode":
                 barcode_detected = True
                 overlay = frame.copy()
-                alpha = 0.2  # Transparansi 70%
+                alpha = 0.2  # Transparansi 20%
                 cv2.rectangle(overlay, (x1, y1), (x2, y2), (0, 255, 0), -1)
                 cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
     
-    # if current_time - last_capture_time < 5:
-    #     return
+    if current_time - last_capture_time < 5:
+                return
     # Jika tidak ada barcode yang terdeteksi dan kedua objek "Cardboard" dan "ID Card" terdeteksi
     if len(cardboard_indices) > 0 and cardboard_detected and id_card_detected and not barcode_detected:
         capture_frame = True
