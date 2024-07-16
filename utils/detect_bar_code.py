@@ -1,6 +1,17 @@
 import cv2
 import os
+import pygame
 from pyzbar.pyzbar import decode
+
+# Inisialisasi pygame untuk suara
+pygame.mixer.init()
+
+def play_sound():
+    pygame.mixer.music.load("/Users/elang/Documents/PROJECT/AI/NIKE/AI-Object-Recognition/assets/sound/sound-detect.mp3")
+    pygame.mixer.music.play()
+
+# Variabel untuk melacak apakah suara telah diputar untuk barcode yang terdeteksi
+last_detected_barcode = None
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
 def detect_bar_code(frame):
@@ -34,9 +45,18 @@ def detect_bar_code(frame):
         # Cetak data barcode di konsol
         print(f'Detected {barcode_type} barcode: {barcode_data}')
 
+        # Memainkan suara jika barcode baru terdeteksi
+        global last_detected_barcode
+        if barcode_data != last_detected_barcode:
+            play_sound()
+            last_detected_barcode = barcode_data
+
+        # Update jumlah deteksi barcode
+        update_barcode_count(barcode_data)
+
     return frame, barcode_info
 
-# Count Folder no-barcode
+# Fungsi untuk menghitung jumlah file PNG dalam folder no-barcode
 def count_png_files_in_no_barcode_folder():
     folder_path = 'no-barcode'
     if not os.path.exists(folder_path):
@@ -96,9 +116,7 @@ def update_barcode_count(barcode_data):
         barcode_counts[barcode_data] += 1
     else:
         barcode_counts[barcode_data] = 1
+
 # Fungsi untuk mendapatkan jumlah total deteksi barcode yang berbeda
 def get_total_unique_barcodes():
     return len(barcode_counts)
-
-
-
