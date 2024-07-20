@@ -15,8 +15,18 @@ last_detected_barcode = None
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
 def detect_bar_code(frame):
+
+    angles = [-270, -180,-120, -90,-70 -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
+
     barcodes = decode(frame)
     barcode_info = []
+
+    for angle in angles:
+        rotated_frame = rotate_image(frame, angle)
+        decoded_barcodes = decode(rotated_frame)
+        if decoded_barcodes:
+            barcodes = decoded_barcodes
+            break
 
     for barcode in barcodes:
         barcode_data = barcode.data.decode('utf-8')  # Konversi data barcode ke string
@@ -55,6 +65,14 @@ def detect_bar_code(frame):
         update_barcode_count(barcode_data)
 
     return frame, barcode_info
+
+
+def rotate_image(image, angle):
+    (h, w) = image.shape[:2]
+    center = (w // 2, h // 2)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC)
+    return rotated
 
 # Fungsi untuk menghitung jumlah file PNG dalam folder no-barcode
 def count_png_files_in_no_barcode_folder():
