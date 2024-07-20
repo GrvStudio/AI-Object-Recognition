@@ -2,6 +2,7 @@ import cv2
 import os
 import pygame
 from pyzbar.pyzbar import decode
+from concurrent.futures import ThreadPoolExecutor
 
 # Inisialisasi pygame untuk suara
 pygame.mixer.init()
@@ -15,18 +16,20 @@ last_detected_barcode = None
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
 def detect_bar_code(frame):
-
     angles = [-270, -180,-120, -90,-70 -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
 
     barcodes = decode(frame)
     barcode_info = []
 
-    for angle in angles:
-        rotated_frame = rotate_image(frame, angle)
-        decoded_barcodes = decode(rotated_frame)
-        if decoded_barcodes:
-            barcodes = decoded_barcodes
-            break
+    if not barcodes:
+        # Jika tidak ada barcode yang terdeteksi, coba beberapa sudut rotasi
+        with ThreadPoolExecutor() as executor:
+            rotated_frames = executor.map(lambda angle: rotate_image(frame, angle), angles)
+            results = executor.map(decode, rotated_frames)
+            for decoded_barcodes in results:
+                if decoded_barcodes:
+                    barcodes = decoded_barcodes
+                    break
 
     for barcode in barcodes:
         barcode_data = barcode.data.decode('utf-8')  # Konversi data barcode ke string
