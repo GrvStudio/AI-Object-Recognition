@@ -16,16 +16,15 @@ last_detected_barcode = None
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
 def detect_bar_code(frame):
-    angles = [-270, -180,-120, -90,-70 -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
-
+    angles = [-270, -180, -120, -90, -70, -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
     barcodes = decode(frame)
     barcode_info = []
 
     if not barcodes:
         # Jika tidak ada barcode yang terdeteksi, coba beberapa sudut rotasi
         with ThreadPoolExecutor() as executor:
-            rotated_frames = executor.map(lambda angle: rotate_image(frame, angle), angles)
-            results = executor.map(decode, rotated_frames)
+            rotated_frames = list(executor.map(lambda angle: rotate_image(frame, angle), angles))
+            results = list(executor.map(decode, rotated_frames))
             for decoded_barcodes in results:
                 if decoded_barcodes:
                     barcodes = decoded_barcodes

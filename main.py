@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 import os
 import time
 from ultralytics import YOLO
@@ -40,26 +41,30 @@ def capture_cardboard_if_no_barcode_detected(frame):
             label = model.names[cls]  # Ambil nama kelas dari model
             confidence = box.conf[0].item()  # Konversi tensor ke float
             cv2.putText(frame, f'{label} {confidence:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
+    
+            # Assuming box.vertices exists and provides the vertices of the polygon
+            vertices = np.array(box.vertices, np.int32)
+            vertices = vertices.reshape((-1, 1, 2))  # Reshape for polylines function
+    
             if label == "Cardboard":
                 global cardboard_index
                 cardboard_detected = True
                 border_color = (0, 0, 255)
-                frame = draw_border(frame, (x1, y1), (x2, y2), color=border_color, thickness=2, line_length_x=30, line_length_y=30, padding=20)
+                cv2.polylines(frame, [vertices], isClosed=True, color=border_color, thickness=2)
                 if cardboard_index not in cardboard_indices:
-                    cardboard_indices[cardboard_index] = {'bbox': (x1, y1, x2, y2), 'frame': frame.copy()}
+                    cardboard_indices[cardboard_index] = {'vertices': vertices, 'frame': frame.copy()}
                 else:
                     cardboard_index += 1
-                    cardboard_indices[cardboard_index] = {'bbox': (x1, y1, x2, y2), 'frame': frame.copy()}
+                    cardboard_indices[cardboard_index] = {'vertices': vertices, 'frame': frame.copy()}
             elif label == "ID Card":
                 id_card_detected = True
-                border_color = (255, 0, 0)  # Biru
-                frame = draw_border(frame, (x1, y1), (x2, y2), color=border_color, thickness=2, line_length_x=30, line_length_y=30, padding=20)
+                border_color = (255, 0, 0)  # Blue
+                cv2.polylines(frame, [vertices], isClosed=True, color=border_color, thickness=2)
             elif label == "Barcode":
                 barcode_detected = True
                 overlay = frame.copy()
-                alpha = 0.2  # Transparansi 70%
-                cv2.rectangle(overlay, (x1, y1), (x2, y2), (0, 255, 0), -1)
+                alpha = 0.2  # Transparency 70%
+                cv2.fillPoly(overlay, [vertices], (0, 255, 0))
                 cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
     
     # if current_time - last_capture_time < 5:
