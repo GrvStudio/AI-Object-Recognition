@@ -68,6 +68,25 @@ def detect_bar_code(frame):
 
     return frame, barcode_info
 
+def detect_bar_code_polygon(frame): 
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edges = cv2.Canny(blurred, 50, 150, apertureSize=3)
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    for contour in contours:
+        epsilon = 0.02 * cv2.arcLength(contour, True)
+        approx = cv2.approxPolyDP(contour, epsilon, True)
+
+        if len(approx) == 4:
+            overlay = frame.copy()
+            alpha = 0.2  # Transparansi 70%
+
+            cv2.polylines(overlay, [approx], True, (0, 255, 0), 2)
+            cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+            break
+    
+    return frame
 
 def rotate_image(image, angle):
     (h, w) = image.shape[:2]
