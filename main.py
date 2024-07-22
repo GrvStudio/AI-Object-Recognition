@@ -15,7 +15,7 @@ cardboard_indices = {}  # Kamus untuk menyimpan indeks masing-masing objek "Card
 
 # Variabel untuk melacak waktu terakhir gambar diambil
 last_capture_time = 0
-capture_interval = 10  # Interval waktu (detik) antara capture
+capture_interval = 20  # Interval waktu (detik) antara capture
 
 # Fungsi untuk mendeteksi objek dalam frame menggunakan YOLO
 def detect_objects(frame):
@@ -58,9 +58,9 @@ def capture_cardboard_if_no_barcode_detected(frame):
             elif label == "Barcode":
                 barcode_detected = True
                 overlay = frame.copy()
-                alpha = 0.2  # Transparansi 70%
-                cv2.rectangle(overlay, (x1, y1), (x2, y2), (0, 255, 0), -1)
-                cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+                # alpha = 0.2  # Transparansi 70%
+                # cv2.rectangle(overlay, (x1, y1), (x2, y2), (0, 255, 0), -1)
+                # cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
     
     # if current_time - last_capture_time < 5:
     #     return
@@ -108,13 +108,21 @@ try:
         _, barcode_info = detect_bar_code(frame.copy())  # Copy frame untuk diproses
 
         # Jika ada barcode yang terdeteksi, perbarui nilai terakhir jika berbeda
-        if barcode_info:
-            new_barcode_data = ' | '.join([info[0] for info in barcode_info])
-            if new_barcode_data != last_barcode_data:
-                last_barcode_data = new_barcode_data
-                save_barcode_to_csv(last_barcode_data)  # Simpan data barcode ke CSV
-                update_barcode_count(last_barcode_data)  # Perbarui jumlah deteksi barcode
+        # if barcode_info:
+        #     new_barcode_data = ' | '.join([info[0] for info in barcode_info])
+        #     if new_barcode_data != last_barcode_data:
+        #         last_barcode_data = new_barcode_data
+        #         save_barcode_to_csv(last_barcode_data)  # Simpan data barcode ke CSV
+        #         update_barcode_count(last_barcode_data)  # Perbarui jumlah deteksi barcode
         # Dapatkan jumlah total deteksi barcode yang berbeda
+        if barcode_info:
+            filtered_barcodes = [info[0] for info in barcode_info if "PJA2406220" in info[0]]
+            if filtered_barcodes:
+                new_barcode_data = ' | '.join(filtered_barcodes)
+                if new_barcode_data != last_barcode_data:
+                    last_barcode_data = new_barcode_data
+                    save_barcode_to_csv(last_barcode_data)  # Simpan data barcode ke CSV
+                    update_barcode_count('detected_barcodes.csv')  # Perbarui jumlah deteksi barcode
         total_unique_barcodes = get_total_unique_barcodes()
 
         # Tampilkan hasil deteksi barcode di atas webcam
