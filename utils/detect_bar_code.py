@@ -1,6 +1,7 @@
 import cv2
 import os
 import pygame
+import csv
 from pyzbar.pyzbar import decode
 from concurrent.futures import ThreadPoolExecutor
 
@@ -16,16 +17,15 @@ last_detected_barcode = None
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
 def detect_bar_code(frame):
-    angles = [-270, -180,-120, -90,-70 -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
-
+    angles = [-270, -180, -120, -90, -70, -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
     barcodes = decode(frame)
     barcode_info = []
 
     if not barcodes:
         # Jika tidak ada barcode yang terdeteksi, coba beberapa sudut rotasi
         with ThreadPoolExecutor() as executor:
-            rotated_frames = executor.map(lambda angle: rotate_image(frame, angle), angles)
-            results = executor.map(decode, rotated_frames)
+            rotated_frames = list(executor.map(lambda angle: rotate_image(frame, angle), angles))
+            results = list(executor.map(decode, rotated_frames))
             for decoded_barcodes in results:
                 if decoded_barcodes:
                     barcodes = decoded_barcodes
@@ -69,6 +69,25 @@ def detect_bar_code(frame):
 
     return frame, barcode_info
 
+def detect_bar_code_polygon(frame): 
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edges = cv2.Canny(blurred, 50, 150, apertureSize=3)
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    for contour in contours:
+        epsilon = 0.02 * cv2.arcLength(contour, True)
+        approx = cv2.approxPolyDP(contour, epsilon, True)
+
+        if len(approx) == 4:
+            overlay = frame.copy()
+            alpha = 0.2  # Transparansi 70%
+
+            cv2.polylines(overlay, [approx], True, (0, 255, 0), 2)
+            cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+            break
+    
+    return frame
 
 def rotate_image(image, angle):
     (h, w) = image.shape[:2]
@@ -132,11 +151,25 @@ def show_barcode_results(frame, barcode_data_combined, total_unique_barcodes):
 
 # Fungsi untuk memperbarui jumlah deteksi barcode
 barcode_counts = {}
-def update_barcode_count(barcode_data):
-    if barcode_data in barcode_counts:
-        barcode_counts[barcode_data] += 1
-    else:
-        barcode_counts[barcode_data] = 1
+# def update_barcode_count(barcode_data):
+#     if barcode_data in barcode_counts:
+#         barcode_counts[barcode_data] += 1
+#     else:
+#         barcode_counts[barcode_data] = 1
+
+def update_barcode_count(file_path):
+    if not os.path.exists(file_path):
+        print(f"File {file_path} does not exist.")
+        return
+    
+    with open(file_path, mode='r', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            barcode_data = row[0]
+            if barcode_data in barcode_counts:
+                barcode_counts[barcode_data] += 1
+            else:
+                barcode_counts[barcode_data] = 1
 
 # Fungsi untuk mendapatkan jumlah total deteksi barcode yang berbeda
 def get_total_unique_barcodes():
