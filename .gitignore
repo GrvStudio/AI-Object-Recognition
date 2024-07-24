@@ -1,5 +1,11 @@
 yolo8_env/
 dataSet/
 runs/
+runs-ready
+no-barcode/
 yolov8n.pt
 data.yaml
+detected_barcodes.csv
+.venv/
+
+**/__pycache__/
