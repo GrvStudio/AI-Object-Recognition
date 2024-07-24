@@ -3,7 +3,7 @@ import os
 import time
 from ultralytics import YOLO
 from utils.draw_border import draw_border
-from utils.detect_bar_code import detect_bar_code, show_barcode_results, update_barcode_count, get_total_unique_barcodes, count_png_files_in_no_barcode_folder
+from utils.detect_bar_code import detect_bar_code, play_sound, show_barcode_results, update_barcode_count, get_total_unique_barcodes, count_png_files_in_no_barcode_folder
 from utils.saved_to_Csv import load_saved_barcodes, save_barcode_to_csv
 
 # Inisialisasi model YOLO yang sudah dilatih
@@ -105,7 +105,7 @@ try:
         capture_cardboard_if_no_barcode_detected(frame)
 
         # Deteksi QR code atau barcode
-        _, barcode_info = detect_bar_code(frame.copy())  # Copy frame untuk diproses
+        _, barcode_info = detect_bar_code(frame.copy(), frame)  # Copy frame untuk diproses
 
         # Jika ada barcode yang terdeteksi, perbarui nilai terakhir jika berbeda
         # if barcode_info:
@@ -121,6 +121,7 @@ try:
                 new_barcode_data = ' | '.join(filtered_barcodes)
                 if new_barcode_data != last_barcode_data:
                     last_barcode_data = new_barcode_data
+                    play_sound()
                     save_barcode_to_csv(last_barcode_data)  # Simpan data barcode ke CSV
                     update_barcode_count('detected_barcodes.csv')  # Perbarui jumlah deteksi barcode
         total_unique_barcodes = get_total_unique_barcodes()

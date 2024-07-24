@@ -16,7 +16,7 @@ def play_sound():
 last_detected_barcode = None
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
-def detect_bar_code(frame):
+def detect_bar_code(frame, frameReal):
     angles = [-270, -180, -120, -90, -70, -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
     barcodes = decode(frame)
     barcode_info = []
@@ -36,6 +36,9 @@ def detect_bar_code(frame):
         barcode_type = barcode.type
         x, y, w, h = barcode.rect
         barcode_info.append((barcode_data, x, y, w, h))
+
+        # Tambahkan border hijau di sekitar barcode
+        # cv2.rectangle(frameReal, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         # Tentukan ukuran teks
         text_size = cv2.getTextSize(barcode_data, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
@@ -61,7 +64,7 @@ def detect_bar_code(frame):
         # Memainkan suara jika barcode baru terdeteksi
         global last_detected_barcode
         if barcode_data != last_detected_barcode:
-            play_sound()
+            # play_sound()
             last_detected_barcode = barcode_data
 
         # Update jumlah deteksi barcode
