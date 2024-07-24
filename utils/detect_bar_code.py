@@ -16,7 +16,7 @@ def play_sound():
 last_detected_barcode = None
 
 # Fungsi untuk mendeteksi dan membaca barcode dari frame
-def detect_bar_code(frame, frameReal):
+def detect_bar_code(frame, frameReal, cap):
     angles = [-270, -180, -120, -90, -70, -60, -20, 0, 20, 60, 70, 90, 120, 180, 270]
     barcodes = decode(frame)
     barcode_info = []
@@ -69,6 +69,9 @@ def detect_bar_code(frame, frameReal):
 
         # Update jumlah deteksi barcode
         update_barcode_count(barcode_data)
+
+        # Contoh kontrol fokus otomatis, ganti dengan API kamera yang sesuai
+        cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)  # Aktifkan auto focus
 
     return frame, barcode_info
 

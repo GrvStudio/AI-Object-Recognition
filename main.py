@@ -105,7 +105,7 @@ try:
         capture_cardboard_if_no_barcode_detected(frame)
 
         # Deteksi QR code atau barcode
-        _, barcode_info = detect_bar_code(frame.copy(), frame)  # Copy frame untuk diproses
+        _, barcode_info = detect_bar_code(frame.copy(), frame, cap)  # Copy frame untuk diproses
 
         # Jika ada barcode yang terdeteksi, perbarui nilai terakhir jika berbeda
         # if barcode_info:
