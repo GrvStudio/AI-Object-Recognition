@@ -53,6 +53,9 @@ class BarcodeDetector:
             if barcode_data != self.last_detected_barcode:
                 self.last_detected_barcode = barcode_data
 
+            # Contoh kontrol fokus otomatis, ganti dengan API kamera yang sesuai
+            cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)  # Aktifkan auto focus
+
         return frame, barcode_info
 
     def detect_bar_code_polygon(self, frame):
