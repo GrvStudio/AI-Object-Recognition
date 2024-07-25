@@ -73,7 +73,7 @@ class ObjectDetector:
 
     def process_frame(self, frame, cap):
         self.capture_cardboard_if_no_barcode_detected(frame)
-        _, barcode_info = self.barcode_detector.detect_bar_code(frame.copy(), frame, None)
+        _, barcode_info = self.barcode_detector.detect_bar_code(frame.copy(), frame, cap)
         if barcode_info:
             filtered_barcodes = [info[0] for info in barcode_info if "PJA2406220" in info[0]]
             if filtered_barcodes:
