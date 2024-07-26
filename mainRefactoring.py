@@ -4,7 +4,7 @@ from object_detector.object_detector import ObjectDetector
 def main():
     detector = ObjectDetector(model_path='./runs/detect/train/weights/best.pt')
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FPS, 60)
+    cap.set(cv2.CAP_PROP_FPS, 120)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     # Contoh kontrol fokus otomatis, ganti dengan API kamera yang sesuai

@@ -8,8 +8,13 @@ class BarcodeDetector:
         self.last_detected_barcode = None
 
     def detect_bar_code(self, frame, frameReal, cap):
-        angles = [0, 20, 30, 60, 70, 90, 110, 120, 130, 150, 170, 180, 200, 220, 250, 270, 300, 310, 330, 360]
-        barcodes = decode(frame)
+        angles = [0,20,40,60,80,100,120,140,160,180]
+        # Grayscale conversion
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Gaussian blur (noise reduction)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        barcodes = decode(blurred)
         barcode_info = []
 
         if not barcodes:
@@ -57,26 +62,6 @@ class BarcodeDetector:
             cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)  # Aktifkan auto focus
 
         return frame, barcode_info
-
-    def detect_bar_code_polygon(self, frame):
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        edges = cv2.Canny(blurred, 50, 150, apertureSize=3)
-        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        for contour in contours:
-            epsilon = 0.02 * cv2.arcLength(contour, True)
-            approx = cv2.approxPolyDP(contour, epsilon, True)
-
-            if len(approx) == 4:
-                overlay = frame.copy()
-                alpha = 0.2  # Transparansi 70%
-
-                cv2.polylines(overlay, [approx], True, (0, 255, 0), 2)
-                cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
-                break
-        
-        return frame
 
     def rotate_image(self, image, angle):
         (h, w) = image.shape[:2]
